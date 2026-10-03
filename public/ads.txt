@@ -1,2 +1,1 @@
-# AdSense 승인 후 Google이 제공하는 한 줄로 교체하세요.
-# 예: google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0
+google.com, pub-7746919888868319, DIRECT, f08c47fec0942fa0
