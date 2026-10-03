@@ -473,6 +473,12 @@
           </details>
         </section>
 
+        <nav class="legal-nav" :aria-label="t('footerLegalNav')">
+          <a href="/privacy/">{{ t('footerPrivacy') }}</a>
+          <span aria-hidden="true">·</span>
+          <a href="/about/">{{ t('footerAbout') }}</a>
+        </nav>
+
         <p class="legal-note">{{ t('legalNote') }}</p>
       </footer>
 
@@ -1402,8 +1408,28 @@ tr.selected {
   line-height: 1.75;
 }
 
+.legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.legal-nav a {
+  color: var(--color-accent-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-nav span {
+  color: var(--color-text-subtle);
+}
+
 .legal-note {
-  margin: 24px 0 0;
+  margin: 14px 0 0;
   color: var(--color-text-subtle);
   font-size: 0.69rem;
   line-height: 1.65;

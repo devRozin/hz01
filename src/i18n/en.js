@@ -138,4 +138,7 @@ export default {
     'No. Compare total compensation, variable bonuses, equity, retirement contributions, insurance, leave, commute costs, and local living expenses.',
   legalNote:
     'Results and financial content are for general information only and are not tax, loan, or investment advice.',
+  footerLegalNav: 'Legal',
+  footerPrivacy: 'Privacy Policy',
+  footerAbout: 'About',
 }
