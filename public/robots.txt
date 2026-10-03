@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 프로덕션 빌드 시 VITE_SITE_URL 기준 절대 URL sitemap이 dist에 생성됩니다.
+Sitemap: /sitemap.xml
