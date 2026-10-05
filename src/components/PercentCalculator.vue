@@ -30,16 +30,6 @@
         </div>
       </header>
 
-      <aside class="ad-slot ad-top" aria-label="Advertisement">
-        <div class="ad-placeholder">
-          <!--
-            실제 배포 시 승인된 AdSense <ins class="adsbygoogle"> 코드를 이곳에 삽입하세요.
-            개발 중 빈 광고 호출을 막기 위해 플레이스홀더만 표시합니다.
-          -->
-          <span class="ad-label">ADVERTISEMENT</span>
-        </div>
-      </aside>
-
       <nav class="tabs" :aria-label="t('calculatorTabs')">
         <button
           type="button"
@@ -159,13 +149,6 @@
           </div>
         </section>
 
-        <aside class="ad-slot ad-infeed" aria-label="Sponsored content">
-          <div class="ad-placeholder ad-placeholder-tall">
-            <!-- 실제 배포 시 인아티클 또는 인피드 AdSense 광고 단위를 삽입하세요. -->
-            <span class="ad-label">SPONSORED</span>
-          </div>
-        </aside>
-
         <section class="table-card" aria-labelledby="table-heading">
           <div class="section-heading">
             <div>
@@ -203,6 +186,13 @@
             </table>
           </div>
         </section>
+
+        <AdSenseUnit
+          v-if="salaryAdSlot"
+          :key="'salary-ad'"
+          :slot-id="salaryAdSlot"
+          :ad-label="t('adAriaLabel')"
+        />
       </main>
 
       <main
@@ -439,46 +429,18 @@
         </section>
       </main>
 
-      <aside class="ad-slot ad-bottom" aria-label="Advertisement">
-        <div class="ad-placeholder">
-          <!-- 실제 배포 시 승인된 반응형 AdSense 광고 단위를 삽입하세요. -->
-          <span class="ad-label">ADVERTISEMENT</span>
-        </div>
-      </aside>
-
       <footer class="info-footer">
-        <section class="guide-intro">
-          <p class="step-label">{{ t('smartGuide') }}</p>
-          <h2>{{ t('footerTitle') }}</h2>
-          <p>{{ t('footerDesc') }}</p>
-        </section>
-
-        <div class="guide-grid">
-          <article v-for="guide in guides" :key="guide.title" class="guide-card">
-            <span class="guide-icon" aria-hidden="true">{{ guide.icon }}</span>
-            <h3>{{ guide.title }}</h3>
-            <p>{{ guide.description }}</p>
-          </article>
-        </div>
-
-        <section class="faq-section">
-          <p class="step-label">FAQ</p>
-          <h2>{{ t('faqTitle') }}</h2>
-          <details v-for="faq in faqs" :key="faq.question">
-            <summary>
-              {{ faq.question }}
-              <span aria-hidden="true">+</span>
-            </summary>
-            <p>{{ faq.answer }}</p>
-          </details>
-        </section>
-
+        <AdSenseUnit
+          v-if="footerAdSlot"
+          :key="'footer-ad'"
+          :slot-id="footerAdSlot"
+          :ad-label="t('adAriaLabel')"
+        />
         <nav class="legal-nav" :aria-label="t('footerLegalNav')">
-          <a href="/privacy/">{{ t('footerPrivacy') }}</a>
-          <span aria-hidden="true">·</span>
           <a href="/about/">{{ t('footerAbout') }}</a>
+          <span aria-hidden="true">·</span>
+          <a href="/privacy/">{{ t('footerPrivacy') }}</a>
         </nav>
-
         <p class="legal-note">{{ t('legalNote') }}</p>
       </footer>
 
@@ -497,6 +459,8 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import ko from '../i18n/ko.js'
 import en from '../i18n/en.js'
 import PayrollTools from './payroll/PayrollTools.vue'
+import AdSenseUnit from './AdSenseUnit.vue'
+import { adsenseConfig } from '../config/adsense.js'
 import { applyDocumentSeo } from '../seo/documentSeo.js'
 
 const calculatorMessages = { ko, en }
@@ -517,6 +481,16 @@ const mode3Changed = ref(150)
 const mode4Base = ref(100)
 const mode4Percent = ref(20)
 const mode4Direction = ref('increase')
+
+const footerAdSlot = computed(() =>
+  adsenseConfig.enabled && adsenseConfig.slots.footer ? adsenseConfig.slots.footer : '',
+)
+
+const salaryAdSlot = computed(() => {
+  if (activeTab.value !== 'salary') return ''
+  if (!adsenseConfig.enabled || !adsenseConfig.slots.salaryAfterTable) return ''
+  return adsenseConfig.slots.salaryAfterTable
+})
 
 let toastTimer
 let urlTimer
@@ -579,23 +553,6 @@ const mode4Result = computed(() => {
   const factor = mode4Direction.value === 'decrease' ? 1 - rate : 1 + rate
   return roundPercent(base * factor)
 })
-
-const guides = computed(() => [
-  {
-    icon: '↗',
-    title: t('guideNegotiationTitle'),
-    description: t('guideNegotiationDesc'),
-  },
-  { icon: '◎', title: t('guideTaxTitle'), description: t('guideTaxDesc') },
-  { icon: '⌂', title: t('guideFinanceTitle'), description: t('guideFinanceDesc') },
-])
-
-const faqs = computed(() =>
-  [1, 2, 3].map((index) => ({
-    question: t(`faqQ${index}`),
-    answer: t(`faqA${index}`),
-  })),
-)
 
 const formatNumber = (value) =>
   numberValue(value).toLocaleString(currentLang.value === 'ko' ? 'ko-KR' : 'en-US', {
@@ -745,7 +702,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Wise-inspired tokens — see DESIGN.md; ad slot layout must not change */
+/* Wise-inspired tokens — see DESIGN.md */
 .page-shell {
   min-height: 100vh;
   background:
@@ -757,7 +714,7 @@ onBeforeUnmount(() => {
 .calculator-container {
   width: min(100%, 760px);
   margin: 0 auto;
-  padding: 32px 24px calc(132px + env(safe-area-inset-bottom));
+  padding: 32px 24px calc(56px + env(safe-area-inset-bottom));
   color: var(--color-text);
 }
 
@@ -830,32 +787,6 @@ onBeforeUnmount(() => {
 .lang-switch button.active {
   color: var(--color-primary);
   background: var(--color-accent);
-}
-
-.ad-slot {
-  margin: 22px 0;
-  text-align: center;
-}
-
-.ad-placeholder {
-  display: flex;
-  min-height: 92px;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-ad-bg);
-}
-
-.ad-placeholder-tall {
-  min-height: 116px;
-}
-
-.ad-label {
-  color: var(--color-text-subtle);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
 }
 
 .tabs {
@@ -1121,10 +1052,6 @@ onBeforeUnmount(() => {
   text-underline-offset: 3px;
 }
 
-.ad-infeed {
-  margin: 20px 0;
-}
-
 .sub-text {
   margin: -13px 0 17px;
   color: var(--color-text-muted);
@@ -1300,112 +1227,10 @@ tr.selected {
   font-weight: 800;
 }
 
-.ad-bottom {
-  margin-top: 28px;
-}
-
 .info-footer {
-  margin-top: 42px;
-}
-
-.guide-intro {
-  max-width: 620px;
-}
-
-.guide-intro > p:last-child {
-  margin: 10px 0 0;
-  color: var(--color-text-muted);
-  line-height: 1.75;
-}
-
-.guide-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 22px;
-}
-
-.guide-card {
-  padding: 18px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-}
-
-.guide-icon {
-  display: grid;
-  width: 31px;
-  height: 31px;
-  place-items: center;
-  border-radius: var(--radius-sm);
-  color: var(--color-primary);
-  background: var(--color-accent);
-  font-weight: 800;
-}
-
-.guide-card h3 {
-  margin: 13px 0 7px;
-  color: var(--color-text);
-  font-size: 0.9rem;
-}
-
-.guide-card p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 0.77rem;
-  line-height: 1.65;
-}
-
-.faq-section {
-  margin-top: 42px;
-}
-
-.faq-section h2 {
-  margin-bottom: 15px;
-}
-
-.faq-section details {
+  margin-top: 32px;
+  padding-top: 8px;
   border-top: 1px solid var(--color-border);
-  background: transparent;
-}
-
-.faq-section details:last-of-type {
-  border-bottom: 1px solid var(--color-border);
-}
-
-.faq-section summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 17px 2px;
-  color: var(--color-text);
-  cursor: pointer;
-  font-size: 0.88rem;
-  font-weight: 700;
-  list-style: none;
-}
-
-.faq-section summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-section summary span {
-  color: var(--color-accent-deep);
-  font-size: 1.2rem;
-  transition: transform 0.2s;
-}
-
-.faq-section details[open] summary span {
-  transform: rotate(45deg);
-}
-
-.faq-section details p {
-  margin: -2px 0 17px;
-  padding-right: 35px;
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  line-height: 1.75;
 }
 
 .legal-nav {
@@ -1413,7 +1238,7 @@ tr.selected {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-top: 28px;
+  margin-top: 0;
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -1438,7 +1263,7 @@ tr.selected {
 .toast {
   position: fixed;
   z-index: 1000;
-  bottom: calc(84px + env(safe-area-inset-bottom));
+  bottom: calc(24px + env(safe-area-inset-bottom));
   left: 50%;
   display: flex;
   max-width: calc(100vw - 32px);
@@ -1481,7 +1306,7 @@ tr.selected {
 
 @media (max-width: 680px) {
   .calculator-container {
-    padding: 20px 14px calc(128px + env(safe-area-inset-bottom));
+    padding: 20px 14px calc(56px + env(safe-area-inset-bottom));
   }
 
   .header {
@@ -1505,10 +1330,6 @@ tr.selected {
   .lang-switch button {
     padding: 6px 7px;
     font-size: 0.68rem;
-  }
-
-  .ad-top {
-    margin: 17px 0;
   }
 
   .tabs button {
@@ -1541,25 +1362,6 @@ tr.selected {
   .result-row span:last-child,
   .result-row strong {
     text-align: right;
-  }
-
-  .guide-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .guide-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: 12px;
-  }
-
-  .guide-card h3 {
-    align-self: center;
-    margin: 0;
-  }
-
-  .guide-card p {
-    grid-column: 2;
   }
 }
 

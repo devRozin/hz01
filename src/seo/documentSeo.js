@@ -65,7 +65,7 @@ function setJsonLd(id, data) {
 /**
  * @param {{ lang: 'ko'|'en', messages: Record<string, Record<string, string>>, faqIndexes?: number[] }} options
  */
-export function applyDocumentSeo({ lang, messages, faqIndexes = [1, 2, 3] }) {
+export function applyDocumentSeo({ lang, messages, faqIndexes = [] }) {
   if (typeof document === 'undefined') return
 
   const bundle = messages[lang] || messages.ko
@@ -96,41 +96,41 @@ export function applyDocumentSeo({ lang, messages, faqIndexes = [1, 2, 3] }) {
     upsertLink('alternate', `${origin}/?lang=ko`, { hreflang: 'x-default' })
   }
 
-  const mainEntity = faqIndexes.map((index) => ({
-    '@type': 'Question',
-    name: bundle[`faqQ${index}`],
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: bundle[`faqA${index}`],
+  const graph = [
+    {
+      '@type': 'WebSite',
+      name: bundle.title,
+      description: bundle.metaDescription,
+      url: canonicalUrl,
+      inLanguage: lang === 'ko' ? 'ko-KR' : 'en-US',
     },
-  }))
+    {
+      '@type': 'WebApplication',
+      name: bundle.title,
+      description: bundle.metaDescription,
+      applicationCategory: 'FinanceApplication',
+      operatingSystem: 'Any',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'KRW',
+      },
+    },
+  ]
 
-  setJsonLd(JSON_LD_ID, {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebSite',
-        name: bundle.title,
-        description: bundle.metaDescription,
-        url: canonicalUrl,
-        inLanguage: lang === 'ko' ? 'ko-KR' : 'en-US',
-      },
-      {
-        '@type': 'WebApplication',
-        name: bundle.title,
-        description: bundle.metaDescription,
-        applicationCategory: 'FinanceApplication',
-        operatingSystem: 'Any',
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'KRW',
+  if (faqIndexes.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      mainEntity: faqIndexes.map((index) => ({
+        '@type': 'Question',
+        name: bundle[`faqQ${index}`],
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: bundle[`faqA${index}`],
         },
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity,
-      },
-    ],
-  })
+      })),
+    })
+  }
+
+  setJsonLd(JSON_LD_ID, { '@context': 'https://schema.org', '@graph': graph })
 }

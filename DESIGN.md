@@ -6,7 +6,7 @@
 
 - Trust-first fintech calculator (salary, percent, payroll-adjacent copy).
 - High legibility for numbers; calm surfaces; one accent color for actions and results.
-- **Ad layout is fixed product requirement** — do not remove or reorder: top display, in-feed after salary result, bottom before footer, bottom safe-area for mobile anchor + toast.
+- **Ads (AdSense):** `VITE_ADSENSE_ENABLED=false` until re-approval. After approval: set env on Vercel, create display units, fill `VITE_ADSENSE_SLOT_FOOTER` (required first) and optionally `VITE_ADSENSE_SLOT_SALARY`. Slots: footer above legal nav; salary tab after comparison table only—never above tabs or on `/about/` `/privacy/`.
 
 ## Color
 
@@ -36,24 +36,19 @@
 - Page max width: `760px`; horizontal padding `24px` (mobile `16px`).
 - Card padding: `clamp(20px, 4vw, 28px)`; radius `--radius-lg` `20px`.
 - Control radius `--radius-md` `12px`; pills `--radius-pill` `999px`.
-- Section gap: `20–24px`; **ad slots:** margin `22px 0` (unchanged).
+- Section gap: `20–24px`.
 
 ## Components
 
 - **Tabs:** Stadium container (white surface, border); active = forest fill + white text OR accent fill + forest text (use forest + white for contrast).
 - **Inputs:** White surface, 1px border; focus ring accent.
 - **Result box:** Soft accent background, forest headline numbers.
-- **Ad placeholder:** Dashed border, neutral fill — clearly labeled ADVERTISEMENT / SPONSORED.
-
 ## Motion
 
 - Transitions 0.2s ease; respect `prefers-reduced-motion`.
 
 ## Do not change without explicit request
 
-1. `ad-top` — below header, above tabs.
-2. `ad-infeed` — salary tab only, immediately after result card (payroll tab has no in-feed in v1).
-3. `ad-bottom` — before `info-footer`.
-4. Container `padding-bottom: calc(132px + env(safe-area-inset-bottom))`.
-5. Toast `bottom: calc(84px + env(safe-area-inset-bottom))`.
-6. Primary nav: three tabs — Raise / Payroll / Percent; payroll uses horizontal chips inside.
+1. Primary nav: three tabs — Raise / Payroll / Percent; payroll uses horizontal chips inside.
+2. Legal footer links: `/about/`, `/privacy/` (AdSense-required pages).
+3. Toast `bottom: calc(24px + env(safe-area-inset-bottom))`.

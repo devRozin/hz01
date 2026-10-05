@@ -113,29 +113,7 @@ export default {
   basicDecrease: 'decrease',
   basicIfThen: 'is',
   basicEnChangeLabel: 'change',
-  smartGuide: 'SMART MONEY GUIDE',
-  footerTitle: 'From Salary Negotiation to Net Income',
-  footerDesc:
-    'Look beyond the headline raise and review taxes, benefits, retirement plans, and long-term finances.',
-  guideNegotiationTitle: 'Negotiation Checklist',
-  guideNegotiationDesc:
-    'Bring market benchmarks and measurable results. Compare total compensation, including bonuses, equity, insurance, and paid leave.',
-  guideTaxTitle: 'Tax Planning Guide',
-  guideTaxDesc:
-    'Review retirement contribution limits, available deductions, and how a higher tax bracket may affect your net take-home pay.',
-  guideFinanceTitle: 'Loans & Financial Planning',
-  guideFinanceDesc:
-    'Before taking on more debt, compare interest rates, debt-to-income limits, emergency savings, and the monthly repayment impact.',
-  faqTitle: 'Frequently Asked Questions',
-  faqQ1: 'How does a raise change my take-home pay?',
-  faqA1:
-    'Taxes and payroll deductions vary by location and personal circumstances. The 85% figure shown here is only a quick estimate and may differ from your payslip.',
-  faqQ2: 'Does a raise affect severance or retirement benefits?',
-  faqA2:
-    'Often yes, but calculation rules depend on your employer, plan, and jurisdiction. Check your employment terms or ask a qualified adviser.',
-  faqQ3: 'Should I compare job offers by raise percentage alone?',
-  faqA3:
-    'No. Compare total compensation, variable bonuses, equity, retirement contributions, insurance, leave, commute costs, and local living expenses.',
+  adAriaLabel: 'Advertisement',
   legalNote:
     'Results and financial content are for general information only and are not tax, loan, or investment advice.',
   footerLegalNav: 'Legal',
